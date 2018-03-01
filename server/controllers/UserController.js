@@ -1,21 +1,95 @@
 const FB = require('fb');
 const User = require('../models/User');
+const jwt = require('jsonwebtoken');
 class UserController {
-  static loginFB(req, res) {
-    FB.api('/me', {
-        fields: 'name, email'
-      })
+  static register(req, res) {
+    let obj = {
+      name: req.body.name,
+      email: req.body.email,
+      password: req.body.password
+    };
+
+    User.create(obj)
       .then(doc => {
-        User.findOne({
-            email: doc.email
-          })
-          .then(user => {
-            if (user) {
+        res.status(200).json({
+          message: 'User created',
+          doc: doc
+        });
+      })
+      .catch(error => {
+        res.status(500).json({
+          message: error.message
+        });
+      });
+  }
+
+  static login(req, res) {
+    User.findOne({
+      email: req.body.email
+    })
+      .then(user => {
+        comparePassword(req.body.password, user.password)
+          .then(result => {
+            if (result) {
+              let token = jwt.sign({
+                _id: user._id,
+                name: user.name,
+                email: user.email
+              }, 'hahaha');
+
               res.status(200).json({
                 message: 'Successfully login',
+                token: token,
+                owner: {
+                  _id: user._id,
+                  name: user.name,
+                  email: user.email
+                }
+              });
+            } else {
+              res.status(401).json({
+                message: 'Email or password you entered wrong!'
+              });
+            }
+          })
+          .catch(error => {
+            console.log('SATU');
+
+            res.status(500).json({
+              message: message.error
+            });
+          });
+      })
+      .catch(error => {
+        console.log('DUA');
+
+        res.status(500).json({
+          message: error.message
+        });
+      });
+  }
+
+  static loginFB(req, res) {
+    FB.api('/me', {
+      fields: 'name, email'
+    })
+      .then(doc => {
+        User.findOne({
+          email: doc.email
+        })
+          .then(user => {
+            if (user) {
+              let token = jwt.sign({
+                _id: user._id,
+                name: user.name,
+                email: user.email
+              }, process.env.JWT_TOKEN_SECRET);
+              res.status(200).json({
+                message: 'Successfully login',
+                token: token,
                 user: {
                   _id: user._id,
-                  username: user.username,
+                  name: user.name,
                   email: user.email
                 }
               });
@@ -27,8 +101,14 @@ class UserController {
               }
               User.create(obj)
                 .then(user => {
+                  let token = jwt.sign({
+                    _id: user._id,
+                    name: user.name,
+                    email: user.email
+                  }, process.env.JWT_TOKEN_SECRET);
                   res.status(200).json({
                     message: 'Successfully created',
+                    token: token,
                     user: {
                       _id: user._id,
                       name: user.name,
@@ -37,6 +117,8 @@ class UserController {
                   });
                 })
                 .catch(error => {
+                  console.log('SINI');
+
                   res.status(500).json({
                     message: error.message
                   });
@@ -44,13 +126,16 @@ class UserController {
             }
           })
           .catch(error => {
+            console.log('HAHA');
+
             res.status(500).json({
               message: error.message
             });
           });
-      
-        })
+      })
       .catch(error => {
+        console.log('HGIHIH');
+
         res.status(500).json({
           message: error.message
         });

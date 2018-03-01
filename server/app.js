@@ -7,7 +7,7 @@ const app = express();
 
 const index = require('./routes/index');
 const articles = require('./routes/article');
-
+const users = require('./routes/user');
 
 mongoose.connect('mongodb://localhost/livecode', (err) => {
   err ? console.log('Can\'t connect to database') : console.log('Database connected')
