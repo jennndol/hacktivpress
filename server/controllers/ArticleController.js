@@ -76,7 +76,6 @@ class ArticleController {
       .then(doc => {
         doc.title = req.body.title;
         doc.content = req.body.content;
-        doc.userId = req.decoded._id;
         doc.save()
           .then(payload => {
             res.status(200).json({

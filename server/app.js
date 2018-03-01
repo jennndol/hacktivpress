@@ -6,6 +6,7 @@ const cors = require('cors');
 const app = express();
 
 const index = require('./routes/index');
+const articles = require('./routes/article');
 
 
 mongoose.connect('mongodb://localhost/livecode', (err) => {
@@ -18,6 +19,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors());
 
 app.use('/', index);
+app.use('/articles', articles);
 
 app.use(function(req, res, next) {
   var err = new Error('Not Found');
