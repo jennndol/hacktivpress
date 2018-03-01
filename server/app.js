@@ -20,6 +20,7 @@ app.use(cors());
 
 app.use('/', index);
 app.use('/articles', articles);
+app.use('/auth', users);
 
 app.use(function(req, res, next) {
   var err = new Error('Not Found');

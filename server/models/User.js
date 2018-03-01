@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const generatePassword = require('../helpers/generatePassword')
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -6,7 +7,8 @@ const UserSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: true
+    required: true,
+    unique: true
   },
   password: {
     type: String,
@@ -15,6 +17,20 @@ const UserSchema = new mongoose.Schema({
 }, {
   timestamps: true
 })
+
+UserSchema.pre('save', function (next) {
+  this.email = this.email.toLowerCase();
+
+  generatePassword(this.password)
+    .then(hash => {
+      this.password = hash;
+      next();
+    })
+    .catch(error => {
+      console.log(error);
+    });
+});
+
 
 const User = mongoose.model('User', UserSchema);
 

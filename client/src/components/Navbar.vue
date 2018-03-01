@@ -16,6 +16,9 @@
           <li class="active">
             <router-link to="/">HOME</router-link>
           </li>
+          <li class="active">
+            <router-link to="/create">CREATE</router-link>
+          </li>
         </ul>
         <ul class="nav navbar-nav navbar-right">
           <li class="dropdown">

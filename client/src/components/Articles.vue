@@ -6,6 +6,7 @@
       <article>
         <h1>{{ article.title }}</h1>
         <p>{{ article.content }}</p>
+        <router-link :to="{ name: 'Update'}">Edit</router-link>
         <a @click="deleteArticle(article._id)">Delete</a>
       </article>
     </div>
@@ -13,7 +14,6 @@
 </div>
 </template>
 <script>
-import { mapActions } from 'vuex'
 import Navbar from './Navbar'
 
 export default {
@@ -49,10 +49,10 @@ export default {
         .catch(error => {
           console.log(error)
         })
-    },
-    createArticle () {
-
     }
+  },
+  created () {
+    this.getArticles()
   }
 }
 </script>
