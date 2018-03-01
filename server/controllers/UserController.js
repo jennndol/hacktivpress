@@ -1,6 +1,7 @@
 const FB = require('fb');
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
+const comparePassword = require('../helpers/comparePassword');
 class UserController {
   static register(req, res) {
     let obj = {
@@ -83,7 +84,7 @@ class UserController {
                 _id: user._id,
                 name: user.name,
                 email: user.email
-              }, process.env.JWT_TOKEN_SECRET);
+              }, 'hahaha');
               res.status(200).json({
                 message: 'Successfully login',
                 token: token,
@@ -105,7 +106,7 @@ class UserController {
                     _id: user._id,
                     name: user.name,
                     email: user.email
-                  }, process.env.JWT_TOKEN_SECRET);
+                  }, 'hahaha');
                   res.status(200).json({
                     message: 'Successfully created',
                     token: token,
@@ -126,8 +127,6 @@ class UserController {
             }
           })
           .catch(error => {
-            console.log('HAHA');
-
             res.status(500).json({
               message: error.message
             });

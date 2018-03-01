@@ -14,7 +14,7 @@ export const store = new Vuex.store({
   },
   actions: {
     getArticles: ({commit}, payload) => {
-      console.log(this.$http)
+      this.$http()
     }
   }
 })
